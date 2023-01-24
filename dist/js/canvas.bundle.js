@@ -111,8 +111,7 @@ canvas.height = innerHeight;
 var mouse = {
   x: innerWidth / 2,
   y: innerHeight / 2
-};
-var colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']; // Event Listeners
+}; // Event Listeners
 
 addEventListener('mousemove', function (event) {
   mouse.x = event.clientX;
@@ -124,17 +123,19 @@ addEventListener('resize', function () {
   init();
 }); // Objects
 
-var _Object = /*#__PURE__*/function () {
-  function Object(x, y, radius, color) {
-    _classCallCheck(this, Object);
+var Particle = /*#__PURE__*/function () {
+  function Particle(x, y, radius, color, velocity) {
+    _classCallCheck(this, Particle);
 
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.color = color;
+    this.velocity = velocity;
+    this.lifespan = 1000;
   }
 
-  _createClass(Object, [{
+  _createClass(Particle, [{
     key: "draw",
     value: function draw() {
       c.beginPath();
@@ -147,33 +148,64 @@ var _Object = /*#__PURE__*/function () {
     key: "update",
     value: function update() {
       this.draw();
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
+      this.lifespan--;
     }
   }]);
 
-  return Object;
+  return Particle;
 }(); // Implementation
 
 
-var objects;
+var particles;
 
 function init() {
-  objects = [];
+  particles = [];
+}
 
-  for (var i = 0; i < 400; i++) {// objects.push()
+var hue = 0;
+
+function GenerateRing() {
+  var Circleradius = 20;
+  var nop = 30;
+  var particleRadius = 4;
+  setTimeout(GenerateRing, 50);
+
+  for (var i = 0; i < nop; i++) {
+    var radian = Math.PI * 2 / Circleradius;
+    var x = mouse.x;
+    var y = mouse.y;
+    particles.push(new Particle(x, y, particleRadius, "hsl(".concat(hue * 2, ", 50%, 50%)"), {
+      x: Math.cos(radian * i) * Math.cos(radian * i + 1),
+      y: Math.sin(radian * i) * Math.sin(radian * i + 1)
+    }));
+  }
+
+  if (hue == 360) {
+    hue--;
+  } else {
+    hue++;
   }
 } // Animation Loop
 
 
 function animate() {
   requestAnimationFrame(animate);
-  c.clearRect(0, 0, canvas.width, canvas.height);
-  c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y); // objects.forEach(object => {
-  //  object.update()
-  // })
+  c.fillStyle = 'rgba(0, 0, 0, 0.05)';
+  c.fillRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(function (particle, i) {
+    if (particle.lifespan < 0) {
+      particles.splice(i, 1);
+    } else {
+      particle.update();
+    }
+  });
 }
 
 init();
 animate();
+GenerateRing();
 
 /***/ }),
 
