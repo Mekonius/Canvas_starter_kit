@@ -1,5 +1,3 @@
-const { randomIntFromRange } = require("../../dist/js/canvas.bundle");
-
 // init canvas and canvas settings
 let canvas = document.querySelector('canvas');
 canvas.width = window.innerWidth;
@@ -19,6 +17,7 @@ function Circle(x, y, dx, dy, radius) {
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         c.strokeStyle = 'red';
         c.stroke();
+        c.fill();
     }
 
     this.update = () => {
@@ -34,13 +33,35 @@ function Circle(x, y, dx, dy, radius) {
     }
 }
 
-let circle = new Circle(200, 200, 40, 40, 30);
+
+
+let circleArray = [];
+
+for (let i = 0; i < 100; i++) {
+    let x = Math.random() * innerWidth
+    let y = Math.random() * innerHeight
+    let dx = (Math.random() - 0.5) * 8
+    let dy = (Math.random() - 0.5) * 8
+    let radius = 30
+
+    circleArray.push(new Circle(x, y, dx, dy, radius));
+}
+
+
+
+console.log(circleArray)
+
 
 function animate() {
     requestAnimationFrame(animate);
     c.clearRect(0, 0, innerWidth, innerHeight);
 
-    circle.update();
+    for (let i = 0; i < circleArray.length; i++) {
+        circleArray[i].update()
+    }
 }
 
 animate();
+
+
+
